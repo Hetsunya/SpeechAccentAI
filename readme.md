@@ -4,7 +4,7 @@
 Этот проект направлен на разработку системы машинного обучения, способной определить акцент человека по речи с использованием MFCCs (Mel-Frequency Cepstral Coefficients) и нейронной сети.
 
 ## Датасет
-Speech Accent Archive
+[Speech Accent Archive](https://www.kaggle.com/rtatman/speech-accent-archive)
 
 ## Технологии
 - Python
