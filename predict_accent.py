@@ -4,15 +4,15 @@ import tensorflow as tf
 from sklearn.preprocessing import LabelEncoder
 
 model = tf.keras.models.load_model("model.h5")
-label_encoder_classes = np.load("label_encoder_classes.npy")
+label_encoder_classes = np.load("label_encoder_classes_pad.npy")
 label_encoder = LabelEncoder()
 label_encoder.classes_ = label_encoder_classes
 
-max_frames = 150  # Максимальное количество кадров MFCC
-n_mfcc = 40  # Количество коэффициентов MFCC
-hop_length = 512  # Размер окна
-n_fft = 2048  # Размерность дискретизации
-
+max_frames = 150
+n_mfcc = 40
+hop_length = 1024
+n_fft = 4096
+block_size = 100  # Number of files to process in each block
 
 def predict_accent(audio_file):
     y, sr = librosa.load(audio_file)
@@ -33,9 +33,11 @@ def predict_accent(audio_file):
     predicted_class_index = np.argmax(prediction)
     predicted_accent = label_encoder.classes_[predicted_class_index]
 
-    return predicted_accent
+    return predicted_accent, prediction
 
 # Пример использования
-audio_file = "path/to/your/audio.mp3"  # Замените на путь к вашему аудиофайлу
-predicted_accent = predict_accent(audio_file)
+audio_file = "Recording from 2024-05-02 17.42.46.mp3"  # Замените на путь к вашему аудиофайлу
+predicted_accent, prediction = predict_accent(audio_file)
 print("Predicted accent:", predicted_accent)
+print(np.argmax(prediction))
+print(label_encoder.classes_)

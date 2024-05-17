@@ -6,17 +6,18 @@ import os
 
 # Загрузка модели и LabelEncoder
 model = tf.keras.models.load_model("model.h5")
-label_encoder_classes = np.load("label_encoder_classes.npy")
+label_encoder_classes = np.load("label_encoder_classes_pad.npy")
 label_encoder = LabelEncoder()
 label_encoder.classes_ = label_encoder_classes
 
-folder_path = "recordings"
+folder_path = "test"
 
-max_frames = 150  # Максимальное количество кадров MFCC
-n_mfcc = 40  # Количество коэффициентов MFCC
-hop_length = 512  # Размер окна
-n_fft = 2048  # Размерность дискретизации
-
+max_frames = 100
+n_mfcc = 50
+hop_length = 64
+n_fft = 4096
+block_size = 100  # Number of files to process in each block
+ # Number of files to process in each block
 
 def predict_accent(audio_file):
     # Загрузка и предобработка аудио
@@ -40,13 +41,17 @@ def predict_accent(audio_file):
 
     return predicted_accent
 
-
+count = 0
 for filename in os.listdir(folder_path):
     if filename.endswith(".mp3"):
         predicted_accent = predict_accent(filename)
 
         country_info = filename.split('.')[0]
         country_name = ''.join(filter(str.isalpha, country_info))
+        if(predicted_accent == country_name):
+            count += 1
+        else:
+            print("Predicted accent:", predicted_accent)
+            print("Real accent:", country_name)
 
-        print("Predicted accent:", predicted_accent)
-        print("Real accent:", country_name)
+print(count / len(os.listdir(folder_path)) * 100, "%")
