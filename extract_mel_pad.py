@@ -87,17 +87,17 @@ files = os.listdir(folder_path)
 file_blocks = [files[i:i+block_size] for i in range(0, len(files), block_size)]
 
 # Process each block and accumulate data
-all_mfccs = []
+all_mels = []
 all_labels = []
 for i, block in enumerate(file_blocks):
     print(f"Processing block {i+1}/{len(file_blocks)}")
-    mfccs_block, labels_block = extract_melspecs_and_labels_block(block)
-    all_mfccs.append(mfccs_block)
+    mels_block, labels_block = extract_melspecs_and_labels_block(block)
+    all_mels.append(mels_block)
     all_labels.append(labels_block)
-    del mfccs_block, labels_block  # Delete block data to free memory
+    del mels_block, labels_block  # Delete block data to free memory
 
 # Combine data from all blocks
-extracted_mfccs = np.concatenate(all_mfccs, axis=0)
+extracted_mels = np.concatenate(all_mels, axis=0)
 accent_labels = np.concatenate(all_labels, axis=0)
 
 # Encode labels
@@ -105,7 +105,7 @@ label_encoder = LabelEncoder()
 encoded_labels = label_encoder.fit_transform(accent_labels)
 
 # Save extracted data
-np.save("extracted_mel_pad.npy", extracted_mfccs)
+np.save("extracted_mel_pad.npy", extracted_mels)
 np.save("accent_labels_pad.npy", accent_labels)
 np.save("label_encoder_classes_pad.npy", label_encoder.classes_)
 print("mel, labels, and encoder classes saved!")
